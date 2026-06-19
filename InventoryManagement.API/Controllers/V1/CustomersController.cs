@@ -1,0 +1,187 @@
+using AutoMapper;
+using InventoryManagement.API.DTOs;
+using InventoryManagement.API.Interfaces;
+using InventoryManagement.API.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using InventoryManagement.API.Caching;
+using Asp.Versioning;
+
+namespace InventoryManagement.API.Controllers.V1;
+
+[ApiController]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
+public class CustomersController : ControllerBase
+{
+    private readonly ICustomerService _service;
+    private readonly IMapper _mapper;
+
+    private readonly ICacheService _cacheService;
+    private readonly ILogger<CustomersController> _logger;
+
+    public CustomersController(
+        ICustomerService service,
+        IMapper mapper,
+        ICacheService cacheService,
+        ILogger<CustomersController> logger)
+    {
+        _service = service;
+        _mapper = mapper;
+        _cacheService = cacheService;
+        _logger = logger;
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<CustomerDto>>>
+        GetCustomers()
+    {
+        const string cacheKey = "customers_all";
+
+        var cachedCustomers =
+            await _cacheService.GetData<List<CustomerDto>>(cacheKey);
+
+        if (cachedCustomers != null)
+        {
+            _logger.LogInformation(
+                "Customers fetched from Redis Cache");
+
+            return Ok(cachedCustomers);
+        }
+
+        _logger.LogInformation(
+            "Customers fetched from Database");
+
+        var customers =
+            await _service.GetAllCustomers();
+
+        var customerDtos =
+            _mapper.Map<List<CustomerDto>>(customers);
+
+        await _cacheService.SetData(
+            cacheKey,
+            customerDtos,
+            TimeSpan.FromMinutes(5));
+
+        return Ok(customerDtos);
+    }
+
+    [Authorize]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<CustomerDto>>
+        GetCustomer(int id)
+    {
+        string cacheKey = $"customer_{id}";
+
+        var cachedCustomer =
+            await _cacheService.GetData<CustomerDto>(cacheKey);
+
+        if (cachedCustomer != null)
+        {
+            _logger.LogInformation(
+                $"Customer {id} fetched from Redis Cache");
+
+            return Ok(cachedCustomer);
+        }
+
+        _logger.LogInformation(
+            $"Customer {id} fetched from Database");
+
+        var customer =
+            await _service.GetCustomerById(id);
+
+        if (customer == null)
+            return NotFound();
+
+        var customerDto =
+            _mapper.Map<CustomerDto>(customer);
+
+        await _cacheService.SetData(
+            cacheKey,
+            customerDto,
+            TimeSpan.FromMinutes(5));
+
+        return Ok(customerDto);
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<CustomerDto>>
+        CreateCustomer(CreateCustomerDto dto)
+    {
+        var customer =
+            _mapper.Map<Customer>(dto);
+
+        var createdCustomer =
+            await _service.CreateCustomer(customer);
+
+        await _cacheService.RemoveData("customers_all");
+
+        _logger.LogInformation(
+            "Customers cache invalidated after Create");
+
+        return CreatedAtAction(
+            nameof(GetCustomer),
+            new { id = createdCustomer.CustomerId },
+            _mapper.Map<CustomerDto>(createdCustomer)
+        );
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult>
+        UpdateCustomer(
+            int id,
+            UpdateCustomerDto dto)
+    {
+        if (id != dto.CustomerId)
+            return BadRequest();
+
+        var existingCustomer =
+            await _service.GetCustomerById(id);
+
+        if (existingCustomer == null)
+            return NotFound();
+
+        var customer =
+            _mapper.Map<Customer>(dto);
+
+        await _service.UpdateCustomer(customer);
+
+        await _cacheService.RemoveData("customers_all");
+        await _cacheService.RemoveData($"customer_{id}");
+
+        _logger.LogInformation(
+            $"Cache invalidated for Customer {id}");
+
+        return Ok(new
+        {
+            Message = "Customer updated successfully"
+        });
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult>
+        DeleteCustomer(int id)
+    {
+        var customer =
+            await _service.GetCustomerById(id);
+
+        if (customer == null)
+            return NotFound();
+
+        await _service.DeleteCustomer(id);
+        await _cacheService.RemoveData("customers_all");
+        await _cacheService.RemoveData($"customer_{id}");
+
+        _logger.LogInformation(
+            $"Cache invalidated after deleting Customer {id}");
+
+        return Ok(new
+        {
+            Message = "Customer deleted successfully"
+        });
+    }
+}

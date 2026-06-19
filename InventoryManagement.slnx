@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Gateway.API/Gateway.API.csproj" />
+  <Project Path="InventoryManagement.API/InventoryManagement.API.csproj" />
+</Solution>
