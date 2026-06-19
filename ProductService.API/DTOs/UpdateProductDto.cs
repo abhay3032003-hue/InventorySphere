@@ -1,4 +1,4 @@
-namespace InventoryManagement.API.DTOs;
+namespace ProductService.API.DTOs;
 
 public class UpdateProductDto
 {

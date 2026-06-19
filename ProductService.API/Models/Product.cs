@@ -1,4 +1,4 @@
-namespace InventoryManagement.API.Models
+namespace ProductService.API.Models
 {
     // Product Table
     public class Product
@@ -9,6 +9,6 @@ namespace InventoryManagement.API.Models
         public int Quantity { get; set; }                  // Available Quantity (stock)
         
         // Navigation property (One Product -> Many InvoiceItems)
-        public List<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
+        //public List<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
     }
 }

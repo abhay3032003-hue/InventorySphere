@@ -1,15 +1,15 @@
-using InventoryManagement.API.Data;
-using InventoryManagement.API.Interfaces;
-using InventoryManagement.API.Models;
+using ProductService.API.Data;
+using ProductService.API.Interfaces;
+using ProductService.API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryManagement.API.Repositories;
+namespace ProductService.API.Repositories;
 
 public class ProductRepository : IProductRepository
 {
-    private readonly InventoryContext _context;
+    private readonly ProductDbContext _context;
 
-    public ProductRepository(InventoryContext context)
+    public ProductRepository(ProductDbContext context)
     {
         _context = context;
     }

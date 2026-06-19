@@ -1,15 +1,15 @@
 using AutoMapper;
 using Asp.Versioning;
-using InventoryManagement.API.Caching;
-using InventoryManagement.API.DTOs;
-using InventoryManagement.API.Interfaces;
-using InventoryManagement.API.Models;
+using ProductService.API.Caching;
+using ProductService.API.DTOs;
+using ProductService.API.Interfaces;
+using ProductService.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InventoryManagement.API.Controllers.V1;
+namespace ProductService.API.Controllers.V1;
 
-[ApiController]
+
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 public class ProductsController : ControllerBase
@@ -32,7 +32,7 @@ public class ProductsController : ControllerBase
     }
 
     // GET: api/products
-    [Authorize]
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts()
     {
@@ -67,7 +67,7 @@ public class ProductsController : ControllerBase
     }
 
     // GET: api/products/1
-    [Authorize]
+    
     [HttpGet("{id}")]
     public async Task<ActionResult<ProductDto>> GetProduct(int id)
     {
@@ -110,7 +110,7 @@ public class ProductsController : ControllerBase
     }
 
     // POST: api/products
-    [Authorize(Roles = "Admin")]
+    
     [HttpPost]
     public async Task<ActionResult<ProductDto>>
         CreateProduct(CreateProductDto dto)
@@ -136,7 +136,7 @@ public class ProductsController : ControllerBase
     }
 
     // PUT: api/products/1
-    [Authorize(Roles = "Admin")]
+    
     [HttpPut("{id}")]
     public async Task<IActionResult>
         UpdateProduct(int id, UpdateProductDto dto)
@@ -178,7 +178,7 @@ public class ProductsController : ControllerBase
     }
 
     // DELETE: api/products/1
-    [Authorize(Roles = "Admin")]
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult>
         DeleteProduct(int id)

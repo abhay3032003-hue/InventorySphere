@@ -1,6 +1,6 @@
-using InventoryManagement.API.Models;
+using ProductService.API.Models;
 
-namespace InventoryManagement.API.Interfaces;
+namespace ProductService.API.Interfaces;
 
 public interface IProductService
 {

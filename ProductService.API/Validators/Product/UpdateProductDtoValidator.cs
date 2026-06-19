@@ -1,7 +1,7 @@
 using FluentValidation;
-using InventoryManagement.API.DTOs;
+using ProductService.API.DTOs;
 
-namespace InventoryManagement.API.Validators;
+namespace ProductService.API.Validators;
 
 public class UpdateProductDtoValidator
     : AbstractValidator<UpdateProductDto>

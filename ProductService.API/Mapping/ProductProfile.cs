@@ -1,8 +1,8 @@
 using AutoMapper;
-using InventoryManagement.API.DTOs;
-using InventoryManagement.API.Models;
+using ProductService.API.DTOs;
+using ProductService.API.Models;
 
-namespace InventoryManagement.API.Mappings;
+namespace ProductService.API.Mappings;
 
 public class ProductProfile : Profile
 {
