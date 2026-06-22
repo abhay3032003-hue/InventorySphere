@@ -1,11 +1,14 @@
+using System.Text;
 using Asp.Versioning;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using ProductService.API.Caching;
 using ProductService.API.Data;
 using ProductService.API.Interfaces;
 using ProductService.API.Repositories;
 using ProductService.API.Services;
-using ProductService.API.Caching;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,13 +17,17 @@ builder.Services.AddControllers();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 
 // API Versioning
 builder.Services.AddApiVersioning(options =>
 {
-    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.DefaultApiVersion =
+        new ApiVersion(1, 0);
+
     options.AssumeDefaultVersionWhenUnspecified = true;
+
     options.ReportApiVersions = true;
 });
 
@@ -41,7 +48,47 @@ builder.Services.AddDbContext<ProductDbContext>(options =>
     )
 );
 
-// Redis
+// JWT Authentication
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+
+        options.DefaultChallengeScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+
+        options.DefaultScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+
+                ValidIssuer =
+                    builder.Configuration["Jwt:Issuer"],
+
+                ValidAudience =
+                    builder.Configuration["Jwt:Audience"],
+
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            builder.Configuration["Jwt:Key"]!
+                        )
+                    )
+            };
+    });
+
+builder.Services.AddAuthorization();
+
+// Redis Cache
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = "localhost:6379";
@@ -58,16 +105,22 @@ builder.Services.AddScoped<
     IProductService,
     ProductService.API.Services.ProductService>();
 
-
+// Cache Service
 builder.Services.AddScoped<
     ICacheService,
     RedisCacheService>();
 
 var app = builder.Build();
 
+// Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
 
+// Authentication & Authorization
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Controllers
 app.MapControllers();
 
 app.Run();

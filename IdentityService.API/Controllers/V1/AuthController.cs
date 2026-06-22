@@ -84,4 +84,10 @@ public class AuthController : ControllerBase
             Token = token
         });
     }
+
+    [HttpGet("ping")]
+    public IActionResult Ping()
+    {
+        return Ok("Identity Service Working");
+    }
 }

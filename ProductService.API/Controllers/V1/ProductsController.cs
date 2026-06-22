@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ProductService.API.Controllers.V1;
 
-
+[ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 public class ProductsController : ControllerBase
@@ -34,6 +34,7 @@ public class ProductsController : ControllerBase
     // GET: api/products
     
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts()
     {
         const string cacheKey = "products_all";
@@ -69,6 +70,7 @@ public class ProductsController : ControllerBase
     // GET: api/products/1
     
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<ProductDto>> GetProduct(int id)
     {
         string cacheKey = $"product_{id}";
@@ -112,13 +114,30 @@ public class ProductsController : ControllerBase
     // POST: api/products
     
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ProductDto>>
         CreateProduct(CreateProductDto dto)
     {
+        Console.WriteLine("========== DTO ==========");
+        Console.WriteLine($"Name = {dto.Name}");
+        Console.WriteLine($"Price = {dto.Price}");
+        Console.WriteLine($"Quantity = {dto.Quantity}");
+
         var product = _mapper.Map<Product>(dto);
+
+        Console.WriteLine("========== ENTITY ==========");
+        Console.WriteLine($"Name = {product.Name}");
+        Console.WriteLine($"Price = {product.Price}");
+        Console.WriteLine($"Quantity = {product.Quantity}");
 
         var createdProduct =
             await _service.CreateProduct(product);
+
+        Console.WriteLine("========== SAVED ==========");
+        Console.WriteLine($"Id = {createdProduct.ProductId}");
+        Console.WriteLine($"Name = {createdProduct.Name}");
+        Console.WriteLine($"Price = {createdProduct.Price}");
+        Console.WriteLine($"Quantity = {createdProduct.Quantity}");
 
         var response =
             _mapper.Map<ProductDto>(createdProduct);
@@ -138,6 +157,7 @@ public class ProductsController : ControllerBase
     // PUT: api/products/1
     
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult>
         UpdateProduct(int id, UpdateProductDto dto)
     {
@@ -180,6 +200,7 @@ public class ProductsController : ControllerBase
     // DELETE: api/products/1
     
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult>
         DeleteProduct(int id)
     {
@@ -208,6 +229,7 @@ public class ProductsController : ControllerBase
         });
     }
 
+    [AllowAnonymous]
     [HttpGet("ping")]
     public IActionResult Ping()
     {
