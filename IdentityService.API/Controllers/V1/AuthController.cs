@@ -1,11 +1,11 @@
-using InventoryManagement.API.Auth.DTOs;
-using InventoryManagement.API.Auth.Models;
-using InventoryManagement.API.Auth.Services;
+using IdentityService.API.Auth.DTOs;
+using IdentityService.API.Auth.Models;
+using IdentityService.API.Auth.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 
-namespace InventoryManagement.API.Controllers.V1;
+namespace IdentityService.API.Controllers.V1;
 
 [ApiController]
 [ApiVersion("1.0")]

@@ -1,4 +1,4 @@
-namespace InventoryManagement.API.Auth.DTOs;
+namespace IdentityService.API.Auth.DTOs;
 
 public class RegisterDto
 {
