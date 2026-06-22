@@ -1,13 +1,13 @@
 using AutoMapper;
-using InventoryManagement.API.DTOs;
-using InventoryManagement.API.Interfaces;
-using InventoryManagement.API.Models;
+using CustomerService.API.DTOs;
+using CustomerService.API.Interfaces;
+using CustomerService.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using InventoryManagement.API.Caching;
+using CustomerService.API.Caching;
 using Asp.Versioning;
 
-namespace InventoryManagement.API.Controllers.V1;
+namespace CustomerService.API.Controllers.V1;
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -32,7 +32,7 @@ public class CustomersController : ControllerBase
         _logger = logger;
     }
 
-    [Authorize]
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CustomerDto>>>
         GetCustomers()
@@ -67,7 +67,7 @@ public class CustomersController : ControllerBase
         return Ok(customerDtos);
     }
 
-    [Authorize]
+    
     [HttpGet("{id}")]
     public async Task<ActionResult<CustomerDto>>
         GetCustomer(int id)
@@ -106,7 +106,6 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CustomerDto>>
         CreateCustomer(CreateCustomerDto dto)
     {
@@ -129,7 +128,6 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
     public async Task<IActionResult>
         UpdateCustomer(
             int id,
@@ -162,7 +160,6 @@ public class CustomersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
     public async Task<IActionResult>
         DeleteCustomer(int id)
     {
@@ -183,5 +180,10 @@ public class CustomersController : ControllerBase
         {
             Message = "Customer deleted successfully"
         });
+    }
+    [HttpGet("ping")]
+    public IActionResult Ping()
+    {
+        return Ok("Customers Controller Working");
     }
 }

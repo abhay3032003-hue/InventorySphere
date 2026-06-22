@@ -1,15 +1,15 @@
-using InventoryManagement.API.Data;
-using InventoryManagement.API.Interfaces;
-using InventoryManagement.API.Models;
+using CustomerService.API.Data;
+using CustomerService.API.Interfaces;
+using CustomerService.API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryManagement.API.Repositories;
+namespace CustomerService.API.Repositories;
 
 public class CustomerRepository : ICustomerRepository
 {
-    private readonly InventoryContext _context;
+    private readonly CustomerDbContext _context;
 
-    public CustomerRepository(InventoryContext context)
+    public CustomerRepository(CustomerDbContext context)
     {
         _context = context;
     }

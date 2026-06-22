@@ -1,8 +1,8 @@
 using AutoMapper;
-using InventoryManagement.API.DTOs;
-using InventoryManagement.API.Models;
+using CustomerService.API.DTOs;
+using CustomerService.API.Models;
 
-namespace InventoryManagement.API.Mappings;
+namespace CustomerService.API.Mappings;
 
 public class CustomerProfile : Profile
 {

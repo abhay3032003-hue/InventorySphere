@@ -1,4 +1,4 @@
-namespace InventoryManagement.API.Models
+namespace CustomerService.API.Models
 {
     // Customer Table
     public class Customer
@@ -8,6 +8,5 @@ namespace InventoryManagement.API.Models
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = "";
         // Navigation property (One Customer -> Many Invoices)
-        public List<Invoice> Invoices { get; set; } = new List<Invoice>();
     }
 }

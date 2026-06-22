@@ -1,6 +1,6 @@
-namespace InventoryManagement.API.DTOs;
+namespace CustomerService.API.DTOs;
 
-public class UpdateCustomerDto
+public class CustomerDto
 {
     public int CustomerId { get; set; }
 

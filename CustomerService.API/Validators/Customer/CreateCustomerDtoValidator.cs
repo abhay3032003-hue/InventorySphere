@@ -1,17 +1,13 @@
 using FluentValidation;
-using InventoryManagement.API.DTOs;
+using CustomerService.API.DTOs;
 
-namespace InventoryManagement.API.Validators;
+namespace CustomerService.API.Validators;
 
-public class UpdateCustomerDtoValidator
-    : AbstractValidator<UpdateCustomerDto>
+public class CreateCustomerDtoValidator
+    : AbstractValidator<CreateCustomerDto>
 {
-    public UpdateCustomerDtoValidator()
+    public CreateCustomerDtoValidator()
     {
-        RuleFor(x => x.CustomerId)
-            .GreaterThan(0)
-            .WithMessage("Invalid Customer ID.");
-
         RuleFor(x => x.Name)
             .NotEmpty()
             .WithMessage("Customer name is required.")

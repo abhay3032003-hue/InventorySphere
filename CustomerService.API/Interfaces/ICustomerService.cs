@@ -1,6 +1,6 @@
-using InventoryManagement.API.Models;
+using CustomerService.API.Models;
 
-namespace InventoryManagement.API.Interfaces;
+namespace CustomerService.API.Interfaces;
 
 public interface ICustomerService
 {

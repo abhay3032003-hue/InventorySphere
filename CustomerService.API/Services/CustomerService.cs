@@ -1,7 +1,7 @@
-using InventoryManagement.API.Interfaces;
-using InventoryManagement.API.Models;
+using CustomerService.API.Interfaces;
+using CustomerService.API.Models;
 
-namespace InventoryManagement.API.Services;
+namespace CustomerService.API.Services;
 
 public class CustomerService : ICustomerService
 {
