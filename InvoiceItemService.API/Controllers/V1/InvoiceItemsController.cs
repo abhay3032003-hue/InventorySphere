@@ -15,6 +15,7 @@ namespace InvoiceItemService.API.Controllers.V1;
 public class InvoiceItemsController : ControllerBase
 {
     private readonly IInvoiceItemService _service;
+    private readonly IProductApiService _productApiService;
     private readonly IMapper _mapper;
     private readonly ICacheService _cacheService;
     private readonly ILogger<InvoiceItemsController> _logger;
@@ -23,12 +24,14 @@ public class InvoiceItemsController : ControllerBase
         IInvoiceItemService service,
         IMapper mapper,
         ICacheService cacheService,
-        ILogger<InvoiceItemsController> logger)
+        ILogger<InvoiceItemsController> logger,
+        IProductApiService productApiService)
     {
         _service = service;
         _mapper = mapper;
         _cacheService = cacheService;
         _logger = logger;
+        _productApiService = productApiService;
     }
 
     // GET: api/invoiceitems
@@ -110,13 +113,27 @@ public class InvoiceItemsController : ControllerBase
     // POST: api/invoiceitems
     [HttpPost]
     [Authorize(Roles = "Admin")]
-
     public async Task<ActionResult<InvoiceItemDto>>
-        CreateInvoiceItem(CreateInvoiceItemDto dto)
+    CreateInvoiceItem(CreateInvoiceItemDto dto)
     {
+        // Verify Product Exists
+        var product =
+            await _productApiService.GetProduct(dto.ProductId);
+
+        if (product == null)
+        {
+            return BadRequest(new
+            {
+                Message =
+                    $"Product with ID {dto.ProductId} not found."
+            });
+        }
+
         var item =
             _mapper.Map<InvoiceItem>(dto);
 
+        // Auto-fill price from ProductService
+        item.UnitPrice = product.Price;
         var created =
             await _service.CreateInvoiceItem(item);
 

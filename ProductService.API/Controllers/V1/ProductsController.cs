@@ -111,6 +111,22 @@ public class ProductsController : ControllerBase
         return Ok(productDto);
     }
 
+    [AllowAnonymous]
+    [HttpGet("internal/{id}")]
+    public async Task<ActionResult<ProductDto>>
+    GetProductInternal(int id)
+    {
+        var product =
+            await _service.GetProductById(id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(
+            _mapper.Map<ProductDto>(product));
+    }
     // POST: api/products
     
     [HttpPost]

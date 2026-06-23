@@ -1,12 +1,14 @@
-namespace InvoiceItemService.API.Models
+namespace InvoiceItemService.API.Models;
+
+public class InvoiceItem
 {
-    // InvoiceItem Table
-    public class InvoiceItem
-    {
-        public int InvoiceItemId { get; set; }             // Primary Key
-        public int InvoiceId { get; set; }                 // Foreign Key
-        public int ProductId { get; set; }                 // Foreign Key
-        public int Quantity { get; set; }
-        public decimal TotalPrice { get; set; }
-    }
+    public int InvoiceItemId { get; set; }
+
+    public int InvoiceId { get; set; }
+
+    public int ProductId { get; set; }
+
+    public int Quantity { get; set; }
+
+    public decimal UnitPrice { get; set; }
 }

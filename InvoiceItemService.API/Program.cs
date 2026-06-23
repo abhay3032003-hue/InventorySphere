@@ -100,6 +100,14 @@ builder.Services.AddScoped<
     IInvoiceItemService,
     InvoiceItemService.API.Services.InvoiceItemService>();
 
+builder.Services.AddHttpClient<
+    IProductApiService,
+    ProductApiService>(client =>
+{
+    client.BaseAddress =
+        new Uri("http://localhost:5215/");
+});
+
 // Cache Registration
 builder.Services.AddScoped<
     ICacheService,
