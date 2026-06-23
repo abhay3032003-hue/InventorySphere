@@ -105,6 +105,23 @@ public class CustomersController : ControllerBase
         return Ok(customerDto);
     }
 
+    [AllowAnonymous]
+    [HttpGet("internal/{id}")]
+    public async Task<ActionResult<CustomerDto>>
+    GetCustomerInternal(int id)
+    {
+        var customer =
+            await _service.GetCustomerById(id);
+
+        if (customer == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(
+            _mapper.Map<CustomerDto>(customer));
+    }
+
     [HttpPost]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CustomerDto>>

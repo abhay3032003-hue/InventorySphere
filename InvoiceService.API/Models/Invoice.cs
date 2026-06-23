@@ -1,14 +1,12 @@
-using System;
+namespace InvoiceService.API.Models;
 
-namespace InvoiceService.API.Models
+public class Invoice
 {
-    // Invoice Table
-    public class Invoice
-    {
-        public int InvoiceId { get; set; }                 // Primary Key
-        public int CustomerId { get; set; }                // Foreign Key            // Navigation Property
-        public DateTime Date { get; set; } = DateTime.Now;
+    public int InvoiceId { get; set; }
 
-        // Navigation property (One Invoice -> Many InvoiceItems)
-    }
+    public int CustomerId { get; set; }
+
+    public DateTime InvoiceDate { get; set; }
+
+    public decimal TotalAmount { get; set; }
 }

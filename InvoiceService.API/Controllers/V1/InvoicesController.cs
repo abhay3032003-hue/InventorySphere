@@ -16,6 +16,7 @@ namespace InvoiceService.API.Controllers.V1;
 public class InvoicesController : ControllerBase
 {
     private readonly IInvoiceService _service;
+    private readonly ICustomerApiService _customerApiService;
     private readonly IMapper _mapper;
     private readonly ICacheService _cacheService;
     private readonly ILogger<InvoicesController> _logger;
@@ -24,11 +25,13 @@ public class InvoicesController : ControllerBase
         IInvoiceService service,
         IMapper mapper,
         ICacheService cacheService,
+        ICustomerApiService customerApiService,
         ILogger<InvoicesController> logger)
     {
         _service = service;
         _mapper = mapper;
         _cacheService = cacheService;
+        _customerApiService = customerApiService;
         _logger = logger;
     }
 
@@ -118,6 +121,17 @@ public class InvoicesController : ControllerBase
     public async Task<ActionResult<InvoiceDto>>
         CreateInvoice(CreateInvoiceDto dto)
     {
+        var customer =
+            await _customerApiService
+                .GetCustomer(dto.CustomerId);
+
+        if (customer == null)
+        {
+            return BadRequest(new
+            {
+                Message = $"Customer {dto.CustomerId} not found."
+            });
+        }
         var invoice =
             _mapper.Map<Invoice>(dto);
 
