@@ -34,6 +34,7 @@ public class InvoicesController : ControllerBase
 
     // GET: api/invoices
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<InvoiceDto>>>
         GetInvoices()
     {
@@ -69,6 +70,7 @@ public class InvoicesController : ControllerBase
 
     // GET: api/invoices/1
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<InvoiceDto>>
         GetInvoice(int id)
     {
@@ -112,6 +114,7 @@ public class InvoicesController : ControllerBase
 
     // POST: api/invoices
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<InvoiceDto>>
         CreateInvoice(CreateInvoiceDto dto)
     {
@@ -138,6 +141,7 @@ public class InvoicesController : ControllerBase
 
     // PUT: api/invoices/1
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult>
         UpdateInvoice(
             int id,
@@ -181,6 +185,7 @@ public class InvoicesController : ControllerBase
 
     // DELETE: api/invoices/1
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult>
         DeleteInvoice(int id)
     {
@@ -210,6 +215,7 @@ public class InvoicesController : ControllerBase
     }
 
     [HttpGet("ping")]
+    [AllowAnonymous]
     public IActionResult Ping()
     {
         return Ok("Invoices Controller Working");

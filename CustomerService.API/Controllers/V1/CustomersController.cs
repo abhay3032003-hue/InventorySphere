@@ -32,7 +32,7 @@ public class CustomersController : ControllerBase
         _logger = logger;
     }
 
-    
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CustomerDto>>>
         GetCustomers()
@@ -67,7 +67,7 @@ public class CustomersController : ControllerBase
         return Ok(customerDtos);
     }
 
-    
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<CustomerDto>>
         GetCustomer(int id)
@@ -106,6 +106,7 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CustomerDto>>
         CreateCustomer(CreateCustomerDto dto)
     {
@@ -128,6 +129,7 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult>
         UpdateCustomer(
             int id,
@@ -160,6 +162,7 @@ public class CustomersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult>
         DeleteCustomer(int id)
     {
@@ -182,6 +185,7 @@ public class CustomersController : ControllerBase
         });
     }
     [HttpGet("ping")]
+    [AllowAnonymous]
     public IActionResult Ping()
     {
         return Ok("Customers Controller Working");
